@@ -4,7 +4,7 @@ import React from 'react';
 const MainPage = () => {
     return (
         <div align="center">
-            <h1>메인 페이지입니다.</h1>
+            <h1>Welcome to TodoMate!</h1>
             {/* 회원가입 페이지로 이동하는 버튼 추가 */}
             <button onClick={() => window.location.href='/register'}>회원가입</button>
             <br></br>
