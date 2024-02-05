@@ -1,12 +1,35 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.core.validators import RegexValidator
 
-# Create your models here.
-class User(models.Model):
-    userid = models.EmailField(max_length=254, unique = True)   # email 형식을 가지는 유저 아이디
-    password = models.CharField(max_length=100)                 # 유저 비밀번호
-    password2 = models.CharField(max_length = 100)              # 비밀번호 확인
-    realname = models.CharField(max_length = 15)                # 유저 이름
-    nickname  = models.CharField(max_length=15)                 # 유저 닉네임
-    phoneNumberRegex = RegexValidator(regex = r'^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$')
-    phonenumber = models.CharField(validators = [phoneNumberRegex], max_length = 11, unique = True)     #유저 전화번호
+class CustomUserManager(BaseUserManager):
+    def create_user(self, userid, password=None, **extra_fields):
+        if not userid:
+            raise ValueError('The Email field must be set')
+        user = self.model(userid=userid, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, userid, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+        return self.create_user(userid, password, **extra_fields)
+
+class User(AbstractBaseUser):
+    userid = models.EmailField(max_length=254, unique=True)
+    password = models.CharField(max_length=100)
+    realname = models.CharField(max_length=15, default='default_realname')
+    nickname = models.CharField(max_length=15, unique=True, default='default_realname')
+    phoneNumberRegex = RegexValidator(regex=r'^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$')
+    phonenumber = models.CharField(validators=[phoneNumberRegex], max_length=11, unique=True)
+
+    objects = CustomUserManager()  # Custom manager
+
+    USERNAME_FIELD = 'userid'
+    REQUIRED_FIELDS = ['realname', 'nickname', 'phonenumber']
