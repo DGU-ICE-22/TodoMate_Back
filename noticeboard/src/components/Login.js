@@ -23,7 +23,7 @@ const Register = () => {
         data.append('password', form.password);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/user/login/', data);
+            const response = await axios.post('http://127.0.0.1:8000/api/login/', data);
             console.log(response.data);
         } catch (error) {
             console.error('There was an error!', error);

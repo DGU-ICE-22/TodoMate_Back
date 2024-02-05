@@ -30,7 +30,7 @@ const Register = () => {
         data.append('phonenumber', form.phonenumber);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/user/register/', data);
+            const response = await axios.post('http://127.0.0.1:8000/api/register/', data);
             console.log(response.data);
         } catch (error) {
             console.error('There was an error!', error);
