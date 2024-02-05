@@ -16,5 +16,12 @@
 ### 기능 앱
 
 1. Todo 앱
+       1. Todo CRUD
 2. User 앱
+       1. 회원가입
+       2. 로그인
+       3. 로그아웃
 3. Profile 앱
+       1. Profile CRUD
+       2. 다른 사람 Profile READ
+       3. 다른 사람 TODO 조회
