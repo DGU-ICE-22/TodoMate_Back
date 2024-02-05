@@ -4,7 +4,6 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
-
 class UserRegisterSerializer(serializers.ModelSerializer):
     userid = serializers.EmailField(
         required=True,
@@ -16,7 +15,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         validators = [validate_password],
     )
     password2 = serializers.CharField(write_only = True, required = True)
-    
     class Meta:
         model = User
         fields = ('userid', 'password', 'password2', 'realname', 'nickname', 'phonenumber')
@@ -27,12 +25,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
                 {"password": "비밀번호가 일치하지 않습니다"}
             )
         return data
-    
+
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username = validated_data['userid']
+        validated_data.pop('password2')
+        return User.objects.create_user(**validated_data)
+    
+class UserLoginSerializer(serializers.Serializer):
+    userid = serializers.CharField(required = True)
+    password = serializers.CharField(required = True, write_only = True)
+    
+    def validate(self, data):
+        user = authenticate(**data)
+        if user:
+            token = Token.objects.get(user = user)
+            return token
+        raise serializers.ValidationError(
+            {"error" : "Unable to login with provided credentials"}
         )
-        user.set_password(validated_data['password'])
-        user.save()
-        token = Token.objects.create(user=user)
-        return user
