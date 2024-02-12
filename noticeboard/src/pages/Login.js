@@ -1,8 +1,7 @@
-// register.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const Register = () => {
+const Login = () => {
     const [form, setForm] = useState({
         userid: '',
         password: '',
@@ -18,13 +17,15 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const data = new FormData();
-        data.append('userid', form.userid);
-        data.append('password', form.password);
+        const data = {
+            userid: form.userid,
+            password: form.password,
+        };
 
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/login/', data);
             if (response.status === 200){
+                localStorage.setItem('token', response.data.token); // 로컬 스토리지에 토큰을 저장합니다.
                 alert('로그인 성공!');
                 window.location = '/';
             }else{
@@ -33,20 +34,14 @@ const Register = () => {
             }
         } catch (error) {
             if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
                 console.log(error.response.data);
                 console.log(error.response.status);
                 console.log(error.response.headers);
                 alert(`로그인 중 오류가 발생했습니다 : ${error.response.data}`);
             } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
                 console.log(error.request);
                 alert(`로그인 중 오류가 발생했습니다 : ${error.request}`);
             } else {
-                // Something happened in setting up the request that triggered an Error
                 console.log('Error', error.message);
                 alert(`로그인 중 오류가 발생했습니다 : ${error.message}`);
             }
@@ -77,4 +72,4 @@ const Register = () => {
     );
 }
 
-export default Register;
+export default Login;
