@@ -1,9 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view
-from rest_framework.generics import get_object_or_404, RetrieveUpdateDestroyAPIView
 from .serializers import UserRegisterSerializer, UserLoginSerializer
 from .models import User
 from rest_framework.authtoken.models import Token
@@ -11,6 +8,8 @@ from django.contrib.auth import get_user_model
 from knox.models import AuthToken
 # Create your views here.
 from django.db import transaction
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 class UserRegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
