@@ -7,12 +7,14 @@ const Profile = () => {
     const fetchProfile = async () => {
         try {
             const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰을 가져옵니다.
-            const response = await axios.get('http://127.0.0.1:8000/api/profile/<int:pk>/', {
+            const user_nickname = ; // 닉네임으로 프로필 불러오기
+            const response = await axios.get(`http://127.0.0.1:8000/api/profile/${user_nickname}/`, {
                 headers: {
-                    'Authorization': `Token ${token}` // 'Authorization' 헤더에 토큰을 포함시킵니다.
+                    'Authorization' : `Token ${token}` // 'Authorization' 헤더에 토큰을 포함시킵니다.
                 }
             });
             setProfile(response.data);
+            
         } catch (error) {
             console.error('프로필을 불러오는 데 실패했습니다.', error);
         }
